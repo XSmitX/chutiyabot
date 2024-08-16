@@ -1,19 +1,17 @@
-FROM python:3-slim-buster
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-RUN pip3 install --upgrade pip
+# Set the working directory in the container
+WORKDIR /app
 
-ENV USER botx
-ENV HOME /home/$USER
-ENV BOT $HOME/terabox
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-RUN useradd -m $USER
-RUN chown $USER:$USER $BOT
-USER $USER
-WORKDIR $BOT
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir pyrogram tgcrypto
 
-COPY requirements.txt requirements.txt
-RUN pip3 install --user --no-cache-dir -r requirements.txt
 
-COPY . .
 
-CMD python3 TeraboxBot.py
+# Run bot.py when the container launches
+CMD ["python", "bot.py"]
